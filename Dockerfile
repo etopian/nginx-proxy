@@ -1,4 +1,4 @@
-FROM nginx:1.9.2
+FROM nginx:1.11.3
 MAINTAINER Jason Wilder jwilder@litl.com
 
 # Install wget and install/updates certificates
@@ -15,14 +15,17 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf \
  && sed -i 's/^http {/&\n    client_max_body_size 2G;/g' /etc/nginx/nginx.conf
 
 # Install Forego
-RUN wget -P /usr/local/bin https://godist.herokuapp.com/projects/ddollar/forego/releases/current/linux-amd64/forego \
- && chmod u+x /usr/local/bin/forego
+ADD https://github.com/jwilder/forego/releases/download/v0.16.1/forego /usr/local/bin/forego
+RUN chmod u+x /usr/local/bin/forego
 
-ENV DOCKER_GEN_VERSION 0.4.0
+
+
+ENV DOCKER_GEN_VERSION 0.7.3
 
 RUN wget https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-linux-amd64-$DOCKER_GEN_VERSION.tar.gz \
  && tar -C /usr/local/bin -xvzf docker-gen-linux-amd64-$DOCKER_GEN_VERSION.tar.gz \
  && rm /docker-gen-linux-amd64-$DOCKER_GEN_VERSION.tar.gz
+
 
 COPY . /app/
 WORKDIR /app/
